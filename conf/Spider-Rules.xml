@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sites>
+    <site>
+        <title>书趣阁</title>
+        <charset>UTF-8</charset>
+        <url>http://www.shuquge.com</url>
+        <chapter-lists-selector>.listmain dd a</chapter-lists-selector>
+    </site>
+    <site>
+        <title>笔趣阁</title>
+        <charset>UTF-8</charset>
+        <url>http://www.biquge.tw</url>
+        <chapter-lists-selector>#list dd a</chapter-lists-selector>
+    </site>
+</sites>

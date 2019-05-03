@@ -16,10 +16,12 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import novel.spider.NovelSiteEnum;
 import novel.spider.entities.Chapter;
 import novel.spider.interfaces.IChapterSpider;
+import novel.spider.util.NovelSpiderUtil;
 
-public class AbstractChapterSpider implements IChapterSpider {
+public abstract class AbstractChapterSpider implements IChapterSpider {
 	protected String crawl(String url) throws Exception{
 		/**
 		 * 	通过静态类HttpClientBuilder的静态方法create,build后返回一个client实体
@@ -27,7 +29,7 @@ public class AbstractChapterSpider implements IChapterSpider {
 		//创建HttpClient实体,创建get请求,请求结束后释放HttpResponse
 		try (CloseableHttpClient httpClient = HttpClientBuilder.create().build();
 			   CloseableHttpResponse httpResponse = httpClient.execute(new HttpGet(url))) {
-			String	result = EntityUtils.toString(httpResponse.getEntity(),"UTF-8");
+			String	result = EntityUtils.toString(httpResponse.getEntity(),NovelSpiderUtil.getContext(NovelSiteEnum.getEnumByUrl(url)).get("charset"));
 			return result;
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -82,12 +84,16 @@ public class AbstractChapterSpider implements IChapterSpider {
 		try {
 			String result = crawl(url);
 			Document doc = Jsoup.parse(result);
-			Elements as = doc.select(".listmain dd a");
+			//网站路径
+			doc.setBaseUri(url);
+			Elements as = doc.select(NovelSpiderUtil.getContext(NovelSiteEnum.getEnumByUrl(url)).get("chapter-lists-selector"));
 			List<Chapter> chapters = new ArrayList<Chapter>();
 			for (Element a:as) {
 				Chapter chapter = new Chapter();
 				chapter.setTitle(a.text());
-				chapter.setUrl("http://www.shuquge.com/"+a.attr("href"));
+				//chapter.setUrl("http://www.shuquge.com/"+a.attr("href"));
+				//链接路径设置绝对路径
+				chapter.setUrl(a.absUrl("href"));
 				chapters.add(chapter);
 			}
 			return chapters;
