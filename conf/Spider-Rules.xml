@@ -5,11 +5,19 @@
         <charset>UTF-8</charset>
         <url>http://www.shuquge.com</url>
         <chapter-lists-selector>.listmain dd a</chapter-lists-selector>
+        <detail-title-selector>.content h1</detail-title-selector>
+        <detail-content-selector>#content</detail-content-selector>
+        <detail-prev-selector>.page_chapter a</detail-prev-selector>
+        <detail-next-selector>.page_chapter a,2</detail-next-selector>
     </site>
     <site>
         <title>笔趣阁</title>
         <charset>UTF-8</charset>
         <url>http://www.biquge.tw</url>
         <chapter-lists-selector>#list dd a</chapter-lists-selector>
+        <detail-title-selector>.bookname h1</detail-title-selector>
+        <detail-content-selector>#content</detail-content-selector>
+        <detail-prev-selector>.pager_prev</detail-prev-selector>
+        <detail-next-selector>.pager_next</detail-next-selector>
     </site>
 </sites>
