@@ -20,6 +20,7 @@ public abstract class AbstractChapterDetailSpider extends AbstractSpider impleme
 			result = result.replace("&nbsp;", "  ").replace("<br />", "\n").replace("<br/>", "\n");
 			//通过jsoup解析结果
 			Document doc = Jsoup.parse(result);
+			//设置基准地址,将相对地址转为绝对地址
 			doc.setBaseUri(url);
 			//获取小说网站枚举
 			Map<String,String> context = NovelSpiderUtil.getContext(NovelSiteEnum.getEnumByUrl(url));

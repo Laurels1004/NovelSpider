@@ -17,7 +17,17 @@
         <chapter-lists-selector>#list dd a</chapter-lists-selector>
         <detail-title-selector>.bookname h1</detail-title-selector>
         <detail-content-selector>#content</detail-content-selector>
-        <detail-prev-selector>.pager_prev</detail-prev-selector>
-        <detail-next-selector>.pager_next</detail-next-selector>
+        <detail-prev-selector>#pager_prev</detail-prev-selector>
+        <detail-next-selector>#pager_next</detail-next-selector>
+    </site>
+    <site>
+        <title>笔下文学</title>
+        <charset>UTF-8</charset>
+        <url>https://www.bixia.org</url>
+        <chapter-lists-selector>#list dd a</chapter-lists-selector>
+        <detail-title-selector>.bookname h1</detail-title-selector>
+        <detail-content-selector>#content</detail-content-selector>
+        <detail-prev-selector>#A1</detail-prev-selector>
+        <detail-next-selector>#A3</detail-next-selector>
     </site>
 </sites>

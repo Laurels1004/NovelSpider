@@ -4,7 +4,8 @@ package novel.spider;
  * */
 public enum NovelSiteEnum {
 	ShuQuGe(1,"http://www.shuquge.com"),
-	BiQuGe(2,"http://www.biquge.tw");
+	BiQuGe(2,"http://www.biquge.tw"),
+	BiXiaWenXue(3,"https://www.bixia.org");
 	private int id;
 	private String url;
 	private NovelSiteEnum(int id, String url) {

@@ -14,6 +14,7 @@ public abstract class AbstractSpider {
 	protected String crawl(String url) throws Exception{
 		/**
 		 * 	通过静态类HttpClientBuilder的静态方法create,build后返回一个client实体
+		 * 特殊语法(jdk1.7)try with resource,如果对象需要close关闭,首先在try后括号中声明可以被关闭的两个对象(httpClient和httpResponse),最后被调用的对象先执行关闭 
 		 **/
 		//创建HttpClient实体,创建get请求,请求结束后释放HttpResponse
 		try (CloseableHttpClient httpClient = HttpClientBuilder.create().build();
