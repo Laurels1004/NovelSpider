@@ -1,6 +1,30 @@
 package novel.spider.impl;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
+import javax.management.RuntimeErrorException;
+
+import novel.spider.NovelSiteEnum;
+import novel.spider.configuration.Configuration;
+import novel.spider.entities.Chapter;
+import novel.spider.entities.ChapterDetail;
+import novel.spider.interfaces.IChapterDetailSpider;
+import novel.spider.interfaces.IChapterSpider;
 import novel.spider.interfaces.INovelDownload;
+import novel.spider.util.ChapterDetailSpiderFactory;
+import novel.spider.util.ChapterSpiderFactory;
 /**
  *  实现多线程下载任意网站的小说
  * 1.拿到该网站的某本小说所有章节:章节列表
@@ -10,9 +34,68 @@ import novel.spider.interfaces.INovelDownload;
 public class NovelDownload implements INovelDownload {
 
 	@Override
-	public String download(String url) {
+	public String download(String url, Configuration config) {
 		// TODO Auto-generated method stub
+		//获取章节列表
+		IChapterSpider chapterSpider = ChapterSpiderFactory.getChapterSpider(url);
+		List<Chapter> chapters = chapterSpider.getChapter(url);
+		//某个线程下载完毕之后,通知主线程下载完毕
+		//所有线程都下载完毕后合并
+		int size = config.getSize();
+		// 2010章节 100章 需要21个线程
+		//java中一个int÷int 结果只能是int; double÷double 结果double; double÷int结果double
+		int maxThreadSize = (int) Math.ceil(chapters.size() * 1.0 / size);
+		//给每个线程分配任务
+		Map<String, List<Chapter>> downloadTaskAlloc = new HashMap<>();
+		for (int i=0; i < maxThreadSize; i++) {
+			// i=0 0-99;i=1 10-199;i=2 200-299
+			int fromIndex = i*(config.getSize());
+			int toIndex = i == maxThreadSize-1 ? chapters.size()-1 :i*(config.getSize())+config.getSize()-1;
+			//subList,从原有集合中拿出一段子集合,该子集合不能被修改
+			downloadTaskAlloc.put(fromIndex+"-"+toIndex, chapters.subList(fromIndex, toIndex));
+		}
+		//创建线程池
+		ExecutorService service = Executors.newFixedThreadPool(maxThreadSize);
+		Set<String> keySet = downloadTaskAlloc.keySet();
+		List<Future<String>> tasks = new ArrayList<>();
+		for (String key : keySet) {
+			tasks.add(service.submit(new DownloadCallable(config.getLocalpath()+"/"+key+".txt",downloadTaskAlloc.get(key))));
+		}
+		service.shutdown();
+		for (Future<String> future:tasks) {
+			try {
+				System.out.println(future.get()+",下载完成!");
+			} catch (InterruptedException | ExecutionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		return null;
 	}
 
+}
+
+class DownloadCallable implements Callable<String>{
+	private List<Chapter> chapters;
+	private String path;
+	public DownloadCallable(String path, List<Chapter> chapters) {
+		// TODO Auto-generated constructor stub
+		this.path = path;
+		this.chapters = chapters;
+	}
+	@Override
+	public String call() throws Exception {
+		try (PrintWriter out = new PrintWriter(new File(path))) {
+			for (Chapter chapter : chapters) {
+				IChapterDetailSpider spider = ChapterDetailSpiderFactory.getChapterDetailSpider(chapter.getUrl());
+				ChapterDetail detail = spider.getChapterDetail(chapter.getUrl());
+				out.print(detail.getTitle());
+				out.print(detail.getContent());
+			}			
+		}catch(IOException e){
+			throw new RuntimeException(e);
+		}
+		return path;
+	}
+	
 }
