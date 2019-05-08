@@ -3,9 +3,9 @@ package novel.spider;
  * 	支持爬取的小说网站枚举
  * */
 public enum NovelSiteEnum {
-	ShuQuGe(1,"http://www.shuquge.com"),
-	BiQuGe(2,"http://www.biquge.tw"),
-	BiXiaWenXue(3,"https://www.bixia.org");
+	ShuQuGe(1,"shuquge.com"),
+	BiQuGe(2,"biquge.tw"),
+	BiXiaWenXue(3,"bixia.org");
 	private int id;
 	private String url;
 	private NovelSiteEnum(int id, String url) {

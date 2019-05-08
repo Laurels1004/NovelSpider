@@ -16,8 +16,8 @@ public abstract class AbstractChapterDetailSpider extends AbstractSpider impleme
 	public ChapterDetail getChapterDetail(String url) {
 		try {
 			String result = super.crawl(url);
-			//替换特殊字符
-			result = result.replace("&nbsp;", "  ").replace("<br />", "\n").replace("<br/>", "\n");
+			//替换特殊字符,Jsoup不能解析\n换行
+			result = result.replace("&nbsp;", "  ").replace("<br />", "${linebreak}").replace("<br/>", "${linebreak}");
 			//通过jsoup解析结果
 			Document doc = Jsoup.parse(result);
 			//设置基准地址,将相对地址转为绝对地址
@@ -43,7 +43,7 @@ public abstract class AbstractChapterDetailSpider extends AbstractSpider impleme
 			splits = contentSelector.split("\\,");
 			splits = parseSelector(splits);
 			//3).通过选择器选中对应节点,设置下标获取文章内容并写入
-			detail.setContent(doc.select(splits[0]).get(Integer.parseInt(splits[1])).text());
+			detail.setContent(doc.select(splits[0]).get(Integer.parseInt(splits[1])).text().replace("${linebreak}", "\n"));
 			
 			//3.获取前一章内容
 			//1).获取配置文件中的前一章的选择器

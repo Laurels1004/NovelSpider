@@ -32,10 +32,10 @@ public class TestCase {
 //		System.out.println(NovelSpiderUtil.getContext(NovelSiteEnum.getEnumByUrl("http://www.shuquge.com/txt/8659/index.html")));
 //	}
 //	
-//	//获取文章详情页的内容
+	//获取文章详情页的内容
 //	public void testGetChapterDetail() {
 //		IChapterDetailSpider detailSpider = new DefaultChapterDetailSpider();
-//		System.out.println(detailSpider.getChapterDetail("http://www.biquge.tw/0_5/1501.html").getContent());
+//		System.out.println(detailSpider.getChapterDetail("http://www.shuquge.com/txt/8659/24474504.html").getContent());
 //	}
 //	
 //	//获取站点特殊文章列表排序内容
@@ -53,6 +53,10 @@ public class TestCase {
 		Configuration config = new Configuration();
 		config.setLocalpath("D:/1");
 		config.setSize(100);
-		download.download("http://www.shuquge.com/txt/8659/index.html", config);
+		System.out.println("下载完毕,文件保存路径"+download.download("http://www.shuquge.com/txt/8659/index.html", config));
+}
+	
+	public void testMultiFileMerge() {
+		NovelSpiderUtil.mutiFileMerge("D:/1", null,false);
 	}
 }

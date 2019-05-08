@@ -1,6 +1,16 @@
 package novel.spider.util;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,6 +68,61 @@ public final class NovelSpiderUtil {
 	public static Map<String,String> getContext(NovelSiteEnum novelSiteEnum){
 		//通过传入的url获取相应的HashMap值
 		return CONTEXT_MAP.get(novelSiteEnum);
+	}
+	
+	/**
+	 * 多个文件合并为一个文件,合并规则:按照文件名分割排序
+	 * @param path基础目录,该目录下的所有文本文件都会被合并到mergeToFile
+	 * @param mergeToFile 被合并的文本文件,这个参数可以 为null,为null合并后的文件保存在path/merge.txt
+	 **/
+	public static void mutiFileMerge(String path,String mergeToFile,boolean deleteThisFiles) {
+		mergeToFile = mergeToFile == null ? path + "/merge.txt" : mergeToFile;
+		File[] files = new File(path).listFiles(new FilenameFilter() 
+		{
+			@Override
+			public boolean accept(File dir, String name) {
+				// 获取文件名：xx.txt
+				return name.endsWith(".txt");
+			}});
+		//对文件进行排序
+		Arrays.sort(files, new Comparator<File>() {
+
+			@Override
+			public int compare(File o1, File o2) {
+				// TODO Auto-generated method stub
+				int o1Index = Integer.parseInt(o1.getName().split("\\-")[0]);
+				int o2Index = Integer.parseInt(o2.getName().split("\\-")[0]);
+				if (o1Index > o2Index) {
+					return 1;
+				} else if(o1Index == o2Index){
+					return 0;
+				}else {
+					return -1;
+				}
+			}
+		});
+		
+		PrintWriter out = null;
+		try {
+			out = new PrintWriter(new File(mergeToFile),"UTF-8");
+			for (File file : files) {
+				BufferedReader buff = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));
+				String line = null;
+				while((line = buff.readLine()) != null) {
+					out.println(line);
+				}
+				buff.close();
+				if (deleteThisFiles) {
+					file.delete();
+				}
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			throw new RuntimeException(e);
+		} finally {
+			out.close();
+		}
+
 	}
 	
 }
