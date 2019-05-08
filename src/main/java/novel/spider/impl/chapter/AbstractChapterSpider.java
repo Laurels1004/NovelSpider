@@ -1,4 +1,4 @@
-package novel.spider.impl;
+package novel.spider.impl.chapter;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -18,6 +18,7 @@ import org.jsoup.select.Elements;
 
 import novel.spider.NovelSiteEnum;
 import novel.spider.entities.Chapter;
+import novel.spider.impl.AbstractSpider;
 import novel.spider.interfaces.IChapterSpider;
 import novel.spider.util.NovelSpiderUtil;
 

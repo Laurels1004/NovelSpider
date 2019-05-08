@@ -7,13 +7,16 @@ import org.junit.Test;
 import novel.spider.NovelSiteEnum;
 import novel.spider.configuration.Configuration;
 import novel.spider.entities.Chapter;
-import novel.spider.impl.DefaultChapterDetailSpider;
-import novel.spider.impl.DefaultChapterSpider;
-import novel.spider.impl.NovelDownload;
-import novel.spider.impl.SpecialChapterSpider;
+import novel.spider.entities.Novel;
+import novel.spider.impl.chapter.DefaultChapterDetailSpider;
+import novel.spider.impl.chapter.DefaultChapterSpider;
+import novel.spider.impl.chapter.SpecialChapterSpider;
+import novel.spider.impl.download.NovelDownload;
 import novel.spider.interfaces.IChapterDetailSpider;
 import novel.spider.interfaces.IChapterSpider;
 import novel.spider.interfaces.INovelDownload;
+import novel.spider.interfaces.INovelSpider;
+import novel.spider.util.NovelSpiderFactory;
 import novel.spider.util.NovelSpiderUtil;
 
 public class TestCase {
@@ -48,15 +51,23 @@ public class TestCase {
 //	}
 //	
 	//测试下载
-	public void testDownload() {
-		INovelDownload download = new NovelDownload();
-		Configuration config = new Configuration();
-		config.setLocalpath("D:/1");
-		config.setSize(100);
-		System.out.println("下载完毕,文件保存路径"+download.download("http://www.shuquge.com/txt/8659/index.html", config));
-}
-	
-	public void testMultiFileMerge() {
-		NovelSpiderUtil.mutiFileMerge("D:/1", null,false);
+//	public void testDownload() {
+//		INovelDownload download = new NovelDownload();
+//		Configuration config = new Configuration();
+//		config.setLocalpath("D:/1");
+//		config.setSize(100);
+//		System.out.println("下载完毕,文件保存路径"+download.download("http://www.shuquge.com/txt/8659/index.html", config));
+//}
+//	
+//	public void testMultiFileMerge() {
+//		NovelSpiderUtil.mutiFileMerge("D:/1", null,false);
+//	}
+
+	public void testNovel() {
+		INovelSpider spider = NovelSpiderFactory.getNovelSpider("http://www.shuquge.com/category/1_1.html");
+		List<Novel> novels = spider.getNovel("http://www.shuquge.com/category/1_1.html");
+		for (Novel novel:novels) {
+			System.out.println(novel);
+		}
 	}
 }

@@ -1,4 +1,4 @@
-package novel.spider.impl;
+package novel.spider.impl.download;
 
 import java.io.File;
 import java.io.IOException;

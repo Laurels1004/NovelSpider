@@ -9,6 +9,7 @@
         <detail-content-selector>#content</detail-content-selector>
         <detail-prev-selector>.page_chapter a</detail-prev-selector>
         <detail-next-selector>.page_chapter a,2</detail-next-selector>
+        <novel-selector>.ll dl dt a</novel-selector>
     </site>
     <site>
         <title>笔趣阁</title>
