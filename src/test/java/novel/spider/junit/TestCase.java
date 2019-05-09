@@ -1,12 +1,20 @@
 package novel.spider.junit;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
+import org.apache.ibatis.io.Resources;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.junit.Test;
 
 import novel.spider.NovelSiteEnum;
 import novel.spider.configuration.Configuration;
+import novel.spider.dao.ChapterDetailDao;
 import novel.spider.entities.Chapter;
+import novel.spider.entities.ChapterDetail;
 import novel.spider.entities.Novel;
 import novel.spider.impl.chapter.DefaultChapterDetailSpider;
 import novel.spider.impl.chapter.DefaultChapterSpider;
@@ -36,10 +44,30 @@ public class TestCase {
 //	}
 //	
 	//获取文章详情页的内容
-//	public void testGetChapterDetail() {
-//		IChapterDetailSpider detailSpider = new DefaultChapterDetailSpider();
-//		System.out.println(detailSpider.getChapterDetail("http://www.shuquge.com/txt/8659/24474504.html").getContent());
-//	}
+	public void testGetChapterDetail() {
+		IChapterDetailSpider detailSpider = new DefaultChapterDetailSpider();
+		ChapterDetail cptdtl = new ChapterDetail();
+		cptdtl = detailSpider.getChapterDetail("http://www.shuquge.com/txt/8659/24496694.html");
+		System.out.println(cptdtl);
+		SqlSession session = null;
+		String resource = "novel/spider/mybatis-config.xml";
+		InputStream inputStream;
+		try {
+			inputStream = Resources.getResourceAsStream(resource);
+			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+		    session = sqlSessionFactory.openSession();
+			ChapterDetailDao cptd = new ChapterDetailDao(session);
+			System.out.println(cptd.getDetailById(1));
+			cptd.addChapterDetail(cptdtl);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+
+		//System.out.println(detailSpider.getChapterDetail("http://www.shuquge.com/txt/8659/24496694.html").getContent());
+	}
 //	
 //	//获取站点特殊文章列表排序内容
 //	public void testGetSpecailChapter() {
@@ -63,11 +91,11 @@ public class TestCase {
 //		NovelSpiderUtil.mutiFileMerge("D:/1", null,false);
 //	}
 
-	public void testNovel() {
-		INovelSpider spider = NovelSpiderFactory.getNovelSpider("http://www.shuquge.com/category/1_1.html");
-		List<Novel> novels = spider.getNovel("http://www.shuquge.com/category/1_1.html");
-		for (Novel novel:novels) {
-			System.out.println(novel);
-		}
-	}
+//	public void testNovel() {
+//		INovelSpider spider = NovelSpiderFactory.getNovelSpider("http://www.shuquge.com/category/1_1.html");
+//		List<Novel> novels = spider.getNovel("http://www.shuquge.com/category/1_1.html");
+//		for (Novel novel:novels) {
+//			System.out.println(novel);
+//		}
+//	}
 }

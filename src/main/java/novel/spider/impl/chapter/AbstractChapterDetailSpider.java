@@ -1,5 +1,7 @@
 package novel.spider.impl.chapter;
 
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.jsoup.Jsoup;
@@ -7,12 +9,15 @@ import org.jsoup.nodes.Document;
 
 import novel.spider.NovelSiteEnum;
 import novel.spider.entities.ChapterDetail;
+import novel.spider.entities.Novel;
 import novel.spider.impl.AbstractSpider;
 import novel.spider.interfaces.IChapterDetailSpider;
 import novel.spider.util.NovelSpiderUtil;
 
 public abstract class AbstractChapterDetailSpider extends AbstractSpider implements IChapterDetailSpider {
-
+	//下一页的url
+	protected String nextPage;
+	
 	@Override
 	public ChapterDetail getChapterDetail(String url) {
 		try {
@@ -63,9 +68,25 @@ public abstract class AbstractChapterDetailSpider extends AbstractSpider impleme
 			splits = nextSelector.split("\\,");
 			splits = parseSelector(splits);
 			//3).通过选择器选中对应节点,设置下标获取前一章标题并写入
-			//detail.setNext(doc.select(splits[0]).get(Integer.parseInt(splits[1])).text());
+			detail.setNext(doc.select(splits[0]).get(Integer.parseInt(splits[1])).text());
 			detail.setNext(doc.select(splits[0]).get(Integer.parseInt(splits[1])).absUrl("href"));
-		
+
+			//1.获取是否有下一页
+			//1).获取配置文件中的下一页选择器
+			String nextChapterSelector = context.get("detail-next-selector");
+			//2).字符分割,不能分割的做特殊处理(选择器设为默认下标0)
+			splits = nextChapterSelector .split("\\,");
+			splits = parseSelector(splits);
+			//3).通过选择器选中对应节点,设置下标获取标题内容并写入
+			String nexturl = doc.select(splits[0]).get(Integer.parseInt(splits[1])).absUrl("href");
+			//indexOf() 返回0时代表包含
+			if (nexturl.indexOf("index.html") != 0) {
+				//不是最后一章
+				nextPage = nexturl;
+			} else {
+				//最后一章
+				nextPage = "";
+			}
 			return detail;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -84,4 +105,23 @@ public abstract class AbstractChapterDetailSpider extends AbstractSpider impleme
 			return splits;
 		}
 	}
+		
+		@Override
+		public boolean hasNext() {
+			return !nextPage.isEmpty();
+		}
+	 
+		@Override
+		public String next() {
+			return nextPage;
+		}
+		
+		@Override
+		public ChapterDetail getNextChapterDetail(String url) {
+			ChapterDetail detail = new ChapterDetail();
+			
+				detail = getChapterDetail(next());
+				return detail;
+		}
+		
 }

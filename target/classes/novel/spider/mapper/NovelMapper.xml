@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="novel.spider.mapper.NovelMapper">
+
+  <select id="selectChapterById" resultType="novel.spider.entities.Chapter" parameterType="int">
+    select * from Chapter where id = #{id}
+  </select>
+
+  <select id="selectAllChapter" resultType="novel.spider.entities.Chapter">
+      select * from Chapter
+  </select>
+
+  <insert id="addChapter" parameterType="novel.spider.entities.Chapter">
+      insert into Chapter values(#{id},#{title},#{url})
+  </insert>
+
+  <select id="selectNovelById" resultType="novel.spider.entities.Novel" parameterType="int">
+    select * from Novel where id = #{id}
+  </select>
+
+  <select id="selectAllNovel" resultType="novel.spider.entities.Novel">
+      select * from Novel
+  </select>
+
+  <insert id="addNovel" parameterType="novel.spider.entities.Novel">
+      insert into Novel values(#name},#{author},#{url})
+  </insert>
+
+  <select id="selectChapterDetailById" resultType="novel.spider.entities.ChapterDetail" parameterType="int">
+    select * from ChapterDetail where id = #{id}
+  </select>
+
+  <select id="selectAllChapterDetail" resultType="novel.spider.entities.ChapterDetail">
+      select * from ChapterDetail
+  </select>
+
+  <insert id="addChapterDetail" parameterType="novel.spider.entities.ChapterDetail">
+     insert into ChapterDetail (title,content) values (#{title},#{content})
+  </insert>
+  
+</mapper>

@@ -9,8 +9,8 @@ public class Chapter implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 3294295374828223393L;
-	private String title;	//小说标题
-	private String url;		//链接
+	private String title;	//章节标题
+	private String url;		//章节链接
 	public String getTitle() {
 		return title;
 	}

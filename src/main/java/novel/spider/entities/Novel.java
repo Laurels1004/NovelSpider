@@ -4,6 +4,10 @@ import java.io.Serializable;
 import java.util.Date;
 //小说实体
 public class Novel implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5831743321189194871L;
 	//书名
 	private String name;
 	//作者名
